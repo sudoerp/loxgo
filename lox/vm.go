@@ -27,6 +27,8 @@ func (vm *VM) resetStack() {
 	vm.stackTop = -1
 }
 
+func (vm *VM) repl() {}
+
 func (vm *VM) push(v Value) {
 	vm.stack = append(vm.stack, v)
 	vm.stackTop++
@@ -65,25 +67,42 @@ func (vm *VM) Run() InterpretResult {
 		case byte(OP_RETURN):
 			printValue(vm.pop())
 			println()
-			fmt.Printf("RETURN\n")
 			return INTERPRET_OK
 
 		case byte(OP_NEGATE):
 			vm.push(-vm.pop())
-			fmt.Println(vm.stack[vm.stackTop])
 
+		case byte(OP_ADD):
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a + b)
+
+		case byte(OP_SUBTRACT):
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a - b)
+
+		case byte(OP_MULTIPLY):
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a * b)
+
+		case byte(OP_DIVIDE):
+			b := vm.pop()
+			a := vm.pop()
+			vm.push(a / b)
 		default:
 			fmt.Printf("Invalid")
 			return INTERPRET_RUNTIME_ERROR
 		}
 
-		// fmt.Printf("       ")
+		fmt.Printf("       ")
 
-		// for i := 0; i < vm.stackTop; i++ {
-		// 	fmt.Printf("[")
-		// 	printValue(vm.stack[i])
-		// 	fmt.Printf("]")
-		// }
+		for i := 0; i < vm.stackTop; i++ {
+			fmt.Printf("[")
+			printValue(vm.stack[i])
+			fmt.Printf("]")
+		}
 
 		fmt.Println()
 	}

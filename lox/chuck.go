@@ -12,6 +12,10 @@ const (
 	OP_CONSTANT
 	OP_NEGATE
 	OP_CONSTANT_LONG
+	OP_ADD
+	OP_SUBTRACT
+	OP_MULTIPLY
+	OP_DIVIDE
 )
 
 type Chunk struct {
@@ -59,6 +63,14 @@ func (c *Chunk) disassembleInstruction(offset int) int {
 		return c.constInstruction("OP_CONSTANT", offset)
 	case byte(OP_NEGATE):
 		return c.simpleInstruction("OP_NEGATE", offset)
+	case byte(OP_ADD):
+		return c.simpleInstruction("OP_ADD", offset)
+	case byte(OP_SUBTRACT):
+		return c.simpleInstruction("OP_SUBTRACT", offset)
+	case byte(OP_MULTIPLY):
+		return c.simpleInstruction("OP_MULTIPLY", offset)
+	case byte(OP_DIVIDE):
+		return c.simpleInstruction("OP_DIVIDE", offset)
 	default:
 		fmt.Printf("Unknow OpCode %d\n", instruction)
 		return offset + 1
