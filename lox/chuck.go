@@ -10,6 +10,7 @@ type Value float64
 const (
 	OP_RETURN OpCode = iota
 	OP_CONSTANT
+	OP_NEGATE
 	OP_CONSTANT_LONG
 )
 
@@ -56,6 +57,8 @@ func (c *Chunk) disassembleInstruction(offset int) int {
 		return c.simpleInstruction("OP_RETURN", offset)
 	case byte(OP_CONSTANT):
 		return c.constInstruction("OP_CONSTANT", offset)
+	case byte(OP_NEGATE):
+		return c.simpleInstruction("OP_NEGATE", offset)
 	default:
 		fmt.Printf("Unknow OpCode %d\n", instruction)
 		return offset + 1

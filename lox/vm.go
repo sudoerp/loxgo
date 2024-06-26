@@ -24,7 +24,7 @@ func (vm *VM) initVM() {
 }
 
 func (vm *VM) resetStack() {
-	vm.stackTop = 0
+	vm.stackTop = -1
 }
 
 func (vm *VM) push(v Value) {
@@ -33,8 +33,10 @@ func (vm *VM) push(v Value) {
 }
 
 func (vm *VM) pop() Value {
-	vm.stackTop -= 1
-	return vm.stack[vm.stackTop]
+	val := vm.stack[len(vm.stack)-1]
+	vm.stackTop--
+	vm.stack = vm.stack[0 : vm.stackTop+1]
+	return val
 }
 
 func (vm *VM) interpret(chunk *Chunk) InterpretResult {
@@ -66,6 +68,10 @@ func (vm *VM) Run() InterpretResult {
 			fmt.Printf("RETURN\n")
 			return INTERPRET_OK
 
+		case byte(OP_NEGATE):
+			vm.push(-vm.pop())
+			fmt.Println(vm.stack[vm.stackTop])
+
 		default:
 			fmt.Printf("Invalid")
 			return INTERPRET_RUNTIME_ERROR
@@ -73,12 +79,12 @@ func (vm *VM) Run() InterpretResult {
 
 		// fmt.Printf("       ")
 
-		// for i := -1; i < vm.stackTop; i++ {
+		// for i := 0; i < vm.stackTop; i++ {
 		// 	fmt.Printf("[")
 		// 	printValue(vm.stack[i])
 		// 	fmt.Printf("]")
 		// }
 
-		// fmt.Println()
+		fmt.Println()
 	}
 }
