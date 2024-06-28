@@ -15,5 +15,11 @@ func (s *Scanner) InitScanner(source string) {
 }
 
 func (s *Scanner) ScanToken() Token {
+	s.start = s.current
+
 	return Token{}
+}
+
+func (s *Scanner) IsAtEnd() bool {
+	return s.current >= len(s.source)
 }
