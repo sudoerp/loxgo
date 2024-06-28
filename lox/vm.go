@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 type InterpretResult int
@@ -27,7 +29,30 @@ func (vm *VM) resetStack() {
 	vm.stackTop = -1
 }
 
-func (vm *VM) repl() {}
+func (vm *VM) Repl() {
+	for {
+		fmt.Printf("> ")
+		reader := bufio.NewReader(os.Stdin)
+		source, _ := reader.ReadString('\n')
+		vm.interpret(source)
+	}
+}
+
+func (vm *VM) RunFile(fileName string) {
+	content, error := os.ReadFile(fileName)
+	if error != nil {
+		fmt.Println("[ERROR]: Unable to read file")
+		return
+	}
+	source := string(content)
+	result := vm.interpret(source)
+	if result == INTERPRET_COMPILE_ERROR {
+		os.Exit(65)
+	}
+	if result == INTERPRET_RUNTIME_ERROR {
+		os.Exit(70)
+	}
+}
 
 func (vm *VM) push(v Value) {
 	vm.stack = append(vm.stack, v)
@@ -41,10 +66,9 @@ func (vm *VM) pop() Value {
 	return val
 }
 
-func (vm *VM) interpret(chunk *Chunk) InterpretResult {
-	vm.chunk = chunk
-	vm.ip = 0
-	return vm.Run()
+func (vm *VM) interpret(source string) InterpretResult {
+	compile(source)
+	return INTERPRET_OK
 }
 
 func (vm *VM) Run() InterpretResult {

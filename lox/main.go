@@ -1,6 +1,9 @@
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
 	var chunk Chunk
@@ -8,11 +11,15 @@ func main() {
 	argv := os.Args
 	argc := len(argv)
 	if argc == 1 {
-		vm.repl()
+		vm.Repl()
+	} else if argc == 2 {
+		vm.RunFile(argv[1])
+	} else {
+		fmt.Fprintf(os.Stderr, "Usage: lox [path]\n")
+		os.Exit(64)
 	}
 	vm.initVM()
 	chunk.initChunk()
 
 	// chunk.disassembleChunk("test")
-	vm.interpret(&chunk)
 }
